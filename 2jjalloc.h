@@ -1,5 +1,6 @@
-//file: 2jjalloc.h
-#ifdef _JJALLOC_
+//2.2.1 设计一个简单的空间配置器:JJ::allocator
+//filename: 2jjalloc.h
+#ifndef _JJALLOC_
 #define _JJALLOC_
 #include <new>		//for placement new
 #include <cstdlib>	//for ptrdiff_t, size_t
@@ -9,7 +10,7 @@ namespace JJ {
 
 template <typename T>
 inline T* _allocate(ptrdiff_t size, T*) {
-	set_new_handle(0);
+	set_new_handle(0);  //内存分配失败抛出std::bad_alloc
 	T *tmp = (T*)(::operator new((size_t)(size * sizeof(T))));
 	if (tmp == 0) {
 		cerr << "out of memory" << endl;
@@ -26,6 +27,7 @@ inline void _deallocate(T* buffer) {
 template <typename T1, typename T2>
 inline void _construct(T1* p, const T2& value) {
 	new(p) T1(value);	//placement new. invoke ctor of T1
+	//用指针p所指的内存空间创建一个T1类型的对象
 }
 
 template <typename T>
@@ -34,7 +36,7 @@ inline void _destory(T* ptr) {
 }
 
 template <typename T>
-class allocter {
+class alloctor {
 public:
 	typedef T			value_type;
 	typedef T*			pointer;
@@ -68,7 +70,7 @@ public:
 	const_pointer const_address(const_reference x) {
 		return (const_pointer)&x;
 	}
-		
+
 	size_type max_size() const {
 		return size_type(UINT_MAX / sizeof(T));
 	}
