@@ -1,0 +1,59 @@
+序列式容器Sequence Container:
+标准：array(build-in),vector,heap(算法形式给出),priority-queue
+非标准: list,slist,deque
+配接器：stack,queue
+
+1.vector<T>
+	单向开口连续线性空间，Random Access Iterator:类型T*;
+	倍加扩容，分摊常数时间O(1);
+	erase(first, last):调用全局函数copy(last, finish, first)
+	insert(pos, n, x):(1).备用空间大于新增元素个数：(插入点后的元素大于/小于等于新增元素的个数);
+					  (2).备用空间小于等于新增元素个数;
+
+2.list<T>
+	双向环状链表，bidiractional Iterator,只要一个节点即可（尾端空白节点）;
+	insert(iter, x); push_back(); push_front(); pop_back(); pop_front()
+	remove(x), unique()
+	transfer(pos, first, last); splice(iter, list&); reverse(); sort()//quick_sort
+	
+3.deque<T>
+	双向开口的连续线性空间，Random Access Iterator;与vector相比，对头部插入删除操作仅需常数时间O(1);且没有capacity观念。
+	map:T**,一小块连续的空间,里面的元素是node
+	node: 节点T*,指向另外一大段连续的线性空间，成为buffer
+	buffer:	缓冲区,deque元素真正存储的空间。
+	iterator: T* cur,指向current元素; T* first 指向该缓冲区头部元素; T* last 指向该缓冲区尾部元素; T** node 指向map
+	
+	对于迭代器而言，最重要的operator+=(),迭代器的运算要考虑缓存区
+	push_back(x)
+	push_front(x)	//这两者要考虑缓存区的备用空间够不够，是否要构造一个新的缓冲区
+	pop_back()
+	pop_front()		//这两者则要考虑缓冲区的剩余元素多不多，是否要释放这个缓冲区
+	clear(); 
+	erase(first, last); insert(pos, x)
+	
+4.stack<T>和queue<T>
+两者都是容器配接器Adapter，默认以deque<T>为底层容器，还可以list<T>;
+两者都不提供遍历功能和迭代器。	
+	不同之处在于：
+					stack<T>										queue<T>
+				FILO：first in last out							FIFO：first in first out
+				可以以vector<T>为底层容器						不能以vector<T>为底层容器
+				push():push_back()								push():push_back()
+				pop():pop_back()								pop():pop_front()
+				top():back()									front(),back()
+				
+5.heap堆，以算法形式给出
+	1.push_heap(first, last)	对已经将元素插入至last的容器进行堆化，上溯的过程:若大于父节点，就交换之
+	2.pop_heap(first, last)		将堆顶元素移动到last前部，剩下的元素继续构造成堆，下溯过程：大于子节点，与较大的子节点交换之
+	3.sort_heap(first, last)	持续执行pop_heap(first, last--)
+	4.make_heap(first, last)	从第一个非节点index = (len/2 - 1)开始进行堆化
+
+6.priority_queue<T> 优先队列
+priority_queue是配接器，默认以vector<T>为底层容器，以heap算法为辅
+FILO: first in largest out,不提供便历功能和迭代器
+	top(): { return front(); }
+	push(): { push_back(); push_heap(); }
+	pop(): { pop_heap(); pop_back(); }
+	
+7.slist
+单向链表，不在标准规范内，迭代器类型是Forward Iterator

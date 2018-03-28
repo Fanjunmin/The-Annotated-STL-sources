@@ -1,0 +1,16 @@
+SGI STL的空间配置器定义在头文件<memory>中，为了精密分工，STL将对象的构造、析构和对象内存的分配、释放分开。
+<memory>主要含有三个头文件：
+1.stl_construct.h,定义了全局函数construct()和destory()负责对象的构造以及析构。
+2.stl_alloc.h,这里负责对象内存的分配与释放，并且考虑小型区块所造成的内存碎片问题，SGI STL设计了双层配置器；
+	(1).一级配置器： __malloc_alloc_template{}:
+		其中，allocate()和deallocate()是直接采用c++的malloc()和free()函数；
+		另外，模拟c++ set-new-handle()函数来处理内存不足的情况，不直接使用set-new-handle()函数是因为并没有直接采用new和delete操作符。
+	(2).二级配置器： __default_alloc_template{}:
+		维护了16个自由链表(free lists),负责16种小型区块的次配置，采用内存池(memory poor),并且内存池直接使用malloc()函数，如果内存不足，转向一级配置器；
+		如果区块需求>128bytes，转向一级配置器。
+	此外，双层配置器均封装在接口simple_alloc{}中，SGI STL的容器均使用simple_alloc接口。
+3.stl_uninitialized.h,这里定义一些全局函数，用来填充(fill)或者复制(copy)大块内存数据，包括函数：
+	un_initalized_copy()
+	un_initalized_fill()
+	un_initalized_fill_n()
+	上述三个函数对于效率都考虑了，最差的情况调用construct(),最佳情况则会调用c标准函数memmove()。

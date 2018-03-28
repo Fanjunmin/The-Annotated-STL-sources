@@ -1,0 +1,29 @@
+迭代器(iterators)概念和traits编程技法:
+如何判断迭代器的型别？方法是利用function template的argument deducation（类型推倒）机制以及template partial specialization（模板偏特化，针对原生(const)指针）。
+迭代器的相应型别有5种：
+	1.value_type		:迭代器所指对象的型别
+	2.difference_type	:两个迭代器间的距离
+	3.pointer			:迭代器所指对象的指针型别
+	4.reference			:迭代器所指对象的引用型别
+	5.iterator_category	:迭代器的分类 ：
+		(1)Input Iterator, read only 输入迭代器，支持operator++
+		(2)Output Iterator, write only 输出迭代器，支持operator++
+		(3)Forward Iterator, 允许读写操作,前向迭代器，支持operator++
+		(4)Bidirectional Iterator, 双向迭代器，支持operator++和operator--
+		(5)Random Access Iterator,随机访问迭代器，不仅支持operator++和operator--，还涵盖所有的指针运算如：p+n,p-n,p[n],p1-p2...
+适当的迭代器采取适当的操作，效率会有明显提升：
+for example:指针p,将累进n次至p+n
+	前3种迭代器:while(n--) p++;
+	第四种迭代器：要判断正负号，如果是符号 while(n++) p--;
+	最后一种随机访问迭代器，只需: p += n;
+可以选择ifelse语句对不同的迭代器执行不同的操作，这种是在运行期才决定用哪一个版本，影响程序效率；最好能在编译器就确定正确的版本。
+这个时候可以采用函数重载，统一接口，接口内调用重载函数，
+函数重载的依据：添加一个迭代器类型的参数，对于不同的迭代器，就会调用不同的版本。
+产生迭代器临时对象:构建一个函数iterator_iterator()
+SGI STL中的函数源码如下：
+template <class I>
+inline typename iterator_traits<I>::iterator_category 
+iterator_category() {
+	typedef typename iterator_traits<I>::iterator_category  iterator_category;
+	return iterator_category(); //返回临时对象
+}
