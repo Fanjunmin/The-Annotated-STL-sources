@@ -1,0 +1,71 @@
+关联式容器(associative containers)
+STL关联式容器主要分为set(集合)和map(映射表)，以及衍生multiset(多键集合)multimap(多键映射表)，底层均以RB-Tree(红黑树)完成。
+非标准的关联式容器hashtable(散列表)，以及与之为底层的hash_set(散列集合)，hash_map(散列映射表)，hash_multiset(散列多键集合)，hash_multimap(散列多键映射表)。
+
+二叉搜索树(BST)：value(leftTree)<value(self)<value(rightTree);O(log n)插入和访问
+
+平衡二叉搜索树(BBST)
+
+AVL树：左右子树高度至多相差1；
+	插入的旋转操作：
+		(1).外侧：插入点位于x左子节点的左子树(左左)/右子节点的右子树(右右)：单旋操作(single rotation);
+		(2).内侧：插入点位于x左子节点的右子树(左右)/右子节点的右子数(右左)：双旋操作(double rotation)(两次单旋操作构成);
+		
+RB-tree:O(log n)插入和访问
+	1.每一个节点不是红色就是黑色；
+	2.根节点为黑色；
+	3.若一个节点为红色，其子节点必然为黑色；
+	4.任意节点至树的尾端(NULL)的任何路径中的黑节点的个数相同；(黑高度)
+	节点S的插入操作：
+		(1).S为黑色且外侧插入：单旋，改变颜色
+		(2).S为黑色且外侧插入：单旋，改变颜色，单旋
+		(3).S为红色且内侧插入：单旋，改变颜色，
+		(4).S为红色且内侧插入：单旋，改变颜色，单旋，改变颜色...直到父节点不再有连续红的情况
+	RB-treeNode:继承自RB-treeNodeBase：parent, left, right, color; 添加一个value
+	RB-treeIterator:继承自RB-treeIteratorBase
+			
+1.set<T> 根据value自动排序
+迭代器类型set<T>::iterator定义为RB-tree::const_iterator,所以无法通过迭代器改变set元素的值;
+集合算法：set_union, set_difference, set_intersection, set_symmetric_difference;
+	1.insert操作：insert(const T& x)返回的是pair<iterator, bool> bool代表插入是否成功， 采用的RB-tree的insert_unique()
+	2.通常find成员函数比STLfind()算法更快，STLfind()算法更快是循序搜索
+
+2.map<T>
+value_type : pair<first, second>;
+迭代器类型map<T>::iterator定义为RB-tree::iterator,可以通过改变迭代器改变元素的实值(value)，但无法通过迭代器改变元素的键值(key);
+很重要的operator[]重载：采用insert函数,insert函数返回的是pair<iterator, bool>
+	T& operator[](const key_value& k)
+	{ return (*(insert(value_type(k, T())).first)).second; }
+for example:
+map<string, int> simap;
+simap[string("hello")] = 1;	//这句等价于下列
+(*(simap.insert(pair<string, int>(string("hello"), int())).first)).second = 1;
+
+3.multiset/multimap:其他全部与set/map相同，除了与insert函数相关的操作，multiset/multimap均调用的是RB-tree的insert_equal()而非insert_unique();
+
+4.hashtable：字典结构，在插入，删除，搜寻等操作上具有常数时间；
+	1.hash function散列函数；
+	2.hash function可能将不同的元素映射到相同的位置，如何解决：
+		负载系数(loading factor)：元素个数除以表格大小，永远在0~1之间；
+		(1).线性探测(linear probing)：如果散列函数计算出的新元素的位置为H，但是该位置上已经被使用，依次尝试H+1，H+2,...,H+i;
+		(2).二次探测(quadratic probing):H+1，H+2^2,...,H+i^2;
+		(3).开链(separate chaining)：在表格元素中维护一个list,在list执行元素的插入、搜索、删除等操作。
+SGISTL便是采用的开链法：维护一串bucket list。
+迭代器种类:forward Iterator,也没有逆向迭代器(reverse iterator),没有operator--()
+STL的开链法中以28个质数来设计表格的大小：
+	53,			97,			193,		389,		769,
+	1543,		3079,		6151,		12289,		24593,
+	49157,		98317,		196613,		393241,		786433,
+	1572869,	3145739,	6291469,	12582917,	25165843,
+	...	4294967291ul(=2^32-5)
+找到上表中大于等于n的那个质数作为表格的大小；
+插入操作：insert_unique() / insert_equal()
+判断元素落脚处(在哪一个bucket list)：bkt_num
+整体复制(copy_from)和删除(clear)
+hash function: <stl_hash_fun_h>定义中有很多现成的hash function;
+	对于非字符串类型，返回原值转换成size_t, 对于(const)char*: h += 5*h + *s;
+	对于string, double, float和用户的自定义类型，需要自己设计hash function。
+	
+5.hash_set
+STL set以RB-tree为底层实现，hash_set则是以hashtable为底层实现，RB-tree与hashtable相比较具有自动排序功能，故set较hash_set具有自动排序。
+
