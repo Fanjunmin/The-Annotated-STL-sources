@@ -1,0 +1,83 @@
+算法(algorithm)
+mutating algorithm（质变算法） and nonmutating algorithm（非质变算法）
+算法总览：
+带*表示SGI专属算法
+
+算法名称					算法用途						质变？
+accumulate					累加							否
+adjacent_difference			相邻元素差						否 if in place
+adjacent_find				查找相邻重复元素				否
+binary_search				二分查找						否
+copy						复制							是 if in place
+copy_backward				逆向复制						是 if in place
+copy_n						复制n个元素						是 if in place
+count						计数							否
+count_if					条件计数						否
+equal						判断两个区间是否相等			否
+equal_range					有序区间寻找某值（返回上下限）	否
+fill						改填元素值						是
+fill_n						改填元素值 n次					是
+find						循序查找						否
+find_if						按条件循序查找					否
+find_end					查找元素最后出现点				否
+find_first_of				查找元素首次出现点				否
+for_each					对区间元素执行操作				否
+generate					以特定的运算结果填充制定区间	是
+generate_n					以特定的运算结果填充制定n个		是
+includes					是否包含于某个区间中			否
+inner_products				内积							否
+inplace_merge				合并替换（覆写）				是
+Iota *						区间指定递增序列				是
+is_heap *					判断一个区间是否为堆			否
+is_sorted *					判断区间是否有序				否
+iter_swap					元素互换						是
+lexicographical_compare		以字典序比较					否
+lower_bound					返回插入元素最低位置			否
+max							最大值							否
+max_element					最大值位置						否
+merge						合并两个序列					是 if in place
+min							最小值							否
+min_element					最小值位置						否
+mismatch					找到不匹配点					否
+next_permutation			下一个排列组合					是
+nth_element					重新安排序列第n个元素的左右两端	是
+partial_sort				局部排序						是
+partial_sort_copy			局部排序并复制到他处			是 if in place
+partial_sum					局部求和						是 if in place 
+partition					分割							是
+prev_permutation			上一个排列组合					是
+power *						幂								否
+random_shuffle *			随机排列元素					是
+random_sample *				随机取样						是 if in place
+random_sample_n *			随机取样						是 if in place
+remove						删除某类元素（本质是后往前移）  是
+remove_copy					删除某类元素复制到另外			是
+remove_if					删除符合条件元素				是
+remove_copy_if				删除符合条件元素复制到另外		是
+replace						替换某一类元素					是
+replace_copy				替换某一类元素复制到另外		是
+replace_if					替换符合条件某一类元素			是
+replace_copy_if				替换符合条件某一类元素并复制	是
+reverse						反转元素次序					是
+reverse_copy				反转元素次序并复制				是
+rotate						旋转							是
+rotate_copy					旋转并复制						是
+search						查找某一子序列					否
+search_n					查找连续n次的子序列				否
+set_difference				差集							是 if in place
+set_intersection			交集							是 if in place
+set_symmetric_difference	对称差集						是 if in place
+set_union					并集							是 if in place
+sort						排序							是
+stable_partition			稳定分割						是
+stable_sort					稳定排序						是
+swap						交换							是
+swap_ranges					交换制定区间					是
+transform					两个序列作用产生第三个序列		是
+unique						重复元素折叠					是
+unique_copy					重复元素折叠并复制				是 if in place
+upper_bound					插入元素的最高位置				否
+make_heap					制造一个堆						是
+pop_heap					从堆中取一个元素				是
+push_heap					将一个元素推入堆中				是		
+sort_heap					对堆排序						是

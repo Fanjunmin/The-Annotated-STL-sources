@@ -1,0 +1,29 @@
+配接器（Adapters）：
+function adapters; container adapters; iterator adapters
+
+1.对于容器配接器：stack, queue
+
+2.对于迭代器配接器：
+	Insert Iterators：
+		back_inserter(container& x), front_inserter(x), inserter(x, iterator i)
+		等价于back_insert_iterator<container>(x); insert_iterator<container>(x, i);
+	Reverse Iterators:
+		eg:rbegin(), rend()
+	IOStream Iterators:
+		eg:Ostream_iterator<int> outite(cout, " ");
+		Istream_iterator<int> inite(cin);
+		
+3.函数配接器（用lambda函数代替之）
+	bind1st(op, x): 	op(x, param)	binder1st<Op>(op, arg1_type(x))
+	bind2nd(op, x): 	op(param, x)	binder2nd<Op>(op, arg2_type(x))
+	not1(pred): 	!pred(param)		unary_negate<Pred>(pred)
+	not2(pred): 	!pred(param1, param2)	binary_negate<Pred>(pred)
+	//compose不在C++标准规范中
+	compose1(op1, op2):		op1(op2(param))		unary_compose<Op1, Op2>(op1, op2)
+	compose2(op1, op2, op3):		op1(op2(op3(param)))		binary_compose<Op1, Op2, Op3>(op1, op2, op3)
+	ptr_fun(Result(*fp)(arg)):		fp(prarm)		point_to_unary_function<Arg, Result>(fp)
+	ptr_fun(Result(*fp)(arg1, arg2)):		fp(prarm1, prarm2)		point_to_binary_function<Arg1, Arg2, Result>(fp)
+	mem_fun(S (T::*f)()):		(param->*f)()
+	mem_fun(S (T::*f)() const):		(param->*f)()
+	mem_fun_ref(S (T::*f)()):		(param.*f)()
+	mem_fun_ref(S (T::*f)() const):		(param.*f)()

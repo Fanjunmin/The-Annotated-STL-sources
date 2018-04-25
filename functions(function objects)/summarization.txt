@@ -1,0 +1,10 @@
+仿函数(functor) 函数对象(function object)
+分类：
+	(1).按参数的类型分：一元仿函数和二元仿函数
+		unary_function 用来呈现一元函数的参数型别以及返回型别；
+		binary_function 用来呈现二元函数的第一，第二参数型别以及返回型别；
+		
+	(2).按照功能分：分为算术类，关系类和逻辑类仿函数
+	算术类：加法plus<T>		减法minus<T>	乘法multiplies<T>	除法divides<T>	模取modulus<T>	否定negation<T>
+	关系类：等于equal_to<T>	不等于not_equal_to<T>	大于greater<T> 	大于等于greater_equal_to<T>	小于less<T>	小于等于less_equal_to<T>
+	逻辑类：And:logical_and<T> 	Or:logical_or<T> 	Not:logical_not<T> 
